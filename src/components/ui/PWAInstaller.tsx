@@ -8,7 +8,10 @@ export function PWAInstaller() {
     const [isInstalled, setIsInstalled] = useState(false);
 
     useEffect(() => {
+        console.log("PWA: Initializing PWAInstaller...");
+
         const handleBeforeInstallPrompt = (e: any) => {
+            console.log("PWA: beforeinstallprompt received!");
             // Prevent the mini-infobar from appearing on mobile
             e.preventDefault();
             // Stash the event so it can be triggered later.
@@ -16,6 +19,7 @@ export function PWAInstaller() {
         };
 
         const handleAppInstalled = () => {
+            console.log("PWA: App successfully installed");
             setIsInstalled(true);
             setInstallPrompt(null);
         };
@@ -24,7 +28,9 @@ export function PWAInstaller() {
         window.addEventListener("appinstalled", handleAppInstalled);
 
         // Check if app is already installed/running in standalone mode
-        if (window.matchMedia('(display-mode: standalone)').matches) {
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+        if (isStandalone) {
+            console.log("PWA: App is already running in standalone mode");
             setIsInstalled(true);
         }
 
@@ -35,7 +41,10 @@ export function PWAInstaller() {
     }, []);
 
     const handleInstallClick = async () => {
-        if (!installPrompt) return;
+        if (!installPrompt) {
+            console.log("PWA: No install prompt available to trigger");
+            return;
+        }
 
         // Show the install prompt
         installPrompt.prompt();
@@ -43,14 +52,11 @@ export function PWAInstaller() {
         // Wait for the user to respond to the prompt
         const { outcome } = await installPrompt.userChoice;
 
-        if (outcome === 'accepted') {
-            console.log('User accepted the install prompt');
-        } else {
-            console.log('User dismissed the install prompt');
-        }
+        console.log(`PWA: User response to install prompt: ${outcome}`);
 
-        // Clear the stashed prompt
-        setInstallPrompt(null);
+        if (outcome === 'accepted') {
+            setInstallPrompt(null);
+        }
     };
 
     if (isInstalled) {
@@ -67,8 +73,6 @@ export function PWAInstaller() {
         );
     }
 
-    if (!installPrompt) return null;
-
     return (
         <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -81,15 +85,29 @@ export function PWAInstaller() {
                 </div>
                 <div>
                     <p className="text-sm font-bold text-foreground">Download App</p>
-                    <p className="text-xs text-muted-foreground">Install for a better experience</p>
+                    <p className="text-xs text-muted-foreground">
+                        {installPrompt ? "Install for a faster experience" : "Add to home screen for quick access"}
+                    </p>
                 </div>
             </div>
-            <Button
-                onClick={handleInstallClick}
-                className="w-full h-11 rounded-xl font-bold shadow-glow"
-            >
-                Install Now
-            </Button>
+
+            {installPrompt ? (
+                <Button
+                    onClick={handleInstallClick}
+                    className="w-full h-11 rounded-xl font-bold shadow-glow"
+                >
+                    Install Now
+                </Button>
+            ) : (
+                <div className="text-xs text-muted-foreground bg-white/50 p-3 rounded-xl border border-primary/5 leading-relaxed">
+                    <p className="font-medium text-foreground/80 mb-1">To Install:</p>
+                    <ul className="space-y-1 list-disc pl-4">
+                        <li className="lg:hidden">Tap the <strong>Share</strong> or <strong>Menu</strong> icon in your browser</li>
+                        <li className="hidden lg:list-item">Click the <strong>Install</strong> icon in the address bar</li>
+                        <li>Select <strong>'Add to Home Screen'</strong> or <strong>'Install App'</strong></li>
+                    </ul>
+                </div>
+            )}
         </motion.div>
     );
 }

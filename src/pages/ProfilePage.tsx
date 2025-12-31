@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
+import { PWAInstaller } from "@/components/ui/PWAInstaller";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -152,6 +153,11 @@ export default function ProfilePage() {
             </button>
           ))}
         </motion.div>
+
+        {/* PWA Installer */}
+        <div className="mt-6">
+          <PWAInstaller />
+        </div>
 
         {/* Logout Button - Only show if user is signed in */}
         {user && (

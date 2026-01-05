@@ -41,7 +41,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       toast({
         title: "Error",
@@ -88,8 +88,8 @@ export default function LoginPage() {
           });
         } else {
           toast({
-            title: "Account Created!",
-            description: "You have successfully signed up.",
+            title: "Verification Email Sent!",
+            description: "Please check your inbox to verify your account before signing in.",
           });
           navigate("/home");
         }
@@ -197,8 +197,8 @@ export default function LoginPage() {
             </div>
           )}
 
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full h-14 rounded-xl text-lg font-semibold shadow-glow"
             disabled={isLoading}
           >

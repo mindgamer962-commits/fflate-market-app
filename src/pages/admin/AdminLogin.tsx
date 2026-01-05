@@ -56,8 +56,8 @@ export default function AdminLogin() {
       }
 
       toast({
-        title: "Account Created!",
-        description: "Admin account has been created. Please sign in.",
+        title: "Admin Account Created",
+        description: "You can now sign in with your admin credentials.",
       });
       setIsSignUp(false);
       setIsLoading(false);
@@ -212,18 +212,6 @@ export default function AdminLogin() {
           </div>
         </motion.form>
 
-        {/* Info */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="mt-6 p-4 bg-primary/5 rounded-xl border border-primary/20"
-        >
-          <p className="text-sm text-center text-muted-foreground">
-            <strong className="text-foreground">Admin Email:</strong><br />
-            {ADMIN_EMAIL}
-          </p>
-        </motion.div>
       </motion.div>
     </div>
   );

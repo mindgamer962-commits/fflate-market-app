@@ -33,7 +33,7 @@ A modern, responsive e-commerce affiliate platform built with React, Supabase, a
    Create a `.env` file with your Supabase credentials:
    ```env
    VITE_SUPABASE_URL=your_supabase_url
-   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
    ```
 4. **Run development server**:
    ```sh

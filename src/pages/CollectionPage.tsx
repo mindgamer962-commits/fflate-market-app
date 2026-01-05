@@ -78,6 +78,7 @@ export default function CollectionPage() {
                                     price={Number(product.price)}
                                     originalPrice={product.original_price ? Number(product.original_price) : undefined}
                                     rating={product.rating ? Number(product.rating) : undefined}
+                                    priceLabel={product.price_label}
                                     discount={product.discount_percent || undefined}
                                 />
                             </motion.div>

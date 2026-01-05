@@ -86,7 +86,7 @@ export function PriceAlertButton({ productId, currentPrice }: PriceAlertButtonPr
             } else {
                 toast({
                     title: "Alert created!",
-                    description: `We'll notify you when the price drops below $${targetPrice}`,
+                    description: `We'll notify you when the price drops below ₹${parseFloat(targetPrice).toLocaleString()}`,
                 });
                 setIsOpen(false);
             }
@@ -122,7 +122,7 @@ export function PriceAlertButton({ productId, currentPrice }: PriceAlertButtonPr
                             Current
                         </Label>
                         <div className="col-span-3 font-medium">
-                            ${currentPrice.toFixed(2)}
+                            ₹{currentPrice.toLocaleString()}
                         </div>
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">

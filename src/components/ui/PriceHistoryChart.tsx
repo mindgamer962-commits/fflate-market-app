@@ -32,10 +32,10 @@ export function PriceHistoryChart({ data }: PriceHistoryChartProps) {
                                 tick={{ fontSize: 12 }}
                                 tickLine={false}
                                 axisLine={false}
-                                tickFormatter={(value) => `$${value}`}
+                                tickFormatter={(value) => `₹${value.toLocaleString()}`}
                             />
                             <Tooltip
-                                formatter={(value: number) => [`$${value}`, "Price"]}
+                                formatter={(value: number) => [`₹${value.toLocaleString()}`, "Price"]}
                                 labelStyle={{ color: "black" }}
                             />
                             <Line

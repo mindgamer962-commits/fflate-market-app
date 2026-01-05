@@ -70,7 +70,10 @@ export default function HomePage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("categories")
-        .select("*")
+        .select(`
+          *,
+          products:products(count)
+        `)
         .eq("is_active", true);
       if (error) throw error;
       return data;
@@ -188,11 +191,13 @@ export default function HomePage() {
               {categories.slice(0, 8).map((category) => {
                 const iconKey = category.icon?.toLowerCase() || category.name.toLowerCase();
                 const Icon = categoryIcons[iconKey] || Smartphone;
+                const productCount = category.products?.[0]?.count || 0;
                 return (
                   <CategoryCard
                     key={category.id}
                     icon={Icon}
                     name={category.name}
+                    itemCount={productCount > 0 ? productCount : "Coming Soon"}
                     onClick={() => navigate(`/category/${category.id}`)}
                   />
                 );
@@ -228,6 +233,7 @@ export default function HomePage() {
                   originalPrice={product.original_price ? Number(product.original_price) : undefined}
                   discount={product.discount_percent || undefined}
                   rating={product.rating ? Number(product.rating) : 0}
+                  priceLabel={product.price_label}
                   image={product.image_url || "/placeholder.svg"}
                   isWishlisted={isWishlisted(product.id)}
                   onWishlistToggle={() => handleWishlistToggle(product.id)}
@@ -267,6 +273,7 @@ export default function HomePage() {
                   originalPrice={product.original_price ? Number(product.original_price) : undefined}
                   discount={product.discount_percent || undefined}
                   rating={product.rating ? Number(product.rating) : 0}
+                  priceLabel={product.price_label}
                   image={product.image_url || "/placeholder.svg"}
                   isWishlisted={isWishlisted(product.id)}
                   onWishlistToggle={() => handleWishlistToggle(product.id)}

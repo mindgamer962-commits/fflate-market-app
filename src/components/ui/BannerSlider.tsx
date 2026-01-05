@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface Banner {
@@ -54,6 +54,14 @@ export function BannerSlider({ banners, autoPlayInterval = 4000 }: BannerSliderP
       {currentBanner.title !== "NONE" && (
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center">
           <div className="px-6 md:px-12 text-white max-w-md">
+            {currentBanner.cta?.toLowerCase().includes("coming soon") && (
+              <div className="flex items-center gap-2 mb-2">
+                <div className="px-2 py-0.5 bg-primary/20 backdrop-blur-md border border-primary/30 rounded text-[10px] font-bold uppercase tracking-wider text-primary flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" />
+                  Coming Soon
+                </div>
+              </div>
+            )}
             <h2 className="text-xl md:text-3xl font-bold mb-1 leading-tight">
               {currentBanner.title}
             </h2>
@@ -63,7 +71,10 @@ export function BannerSlider({ banners, autoPlayInterval = 4000 }: BannerSliderP
               </p>
             )}
             {currentBanner.cta && (
-              <span className="px-4 py-2 bg-primary text-primary-foreground font-semibold rounded-lg shadow-lg inline-block text-sm">
+              <span className={`px-4 py-2 font-semibold rounded-lg shadow-lg inline-block text-sm transition-all duration-300 ${currentBanner.cta.toLowerCase().includes("coming soon")
+                ? "bg-secondary text-secondary-foreground opacity-80 cursor-not-allowed"
+                : "bg-primary text-primary-foreground hover:scale-105 active:scale-95"
+                }`}>
                 {currentBanner.cta}
               </span>
             )}
@@ -85,7 +96,7 @@ export function BannerSlider({ banners, autoPlayInterval = 4000 }: BannerSliderP
             transition={{ duration: 0.5 }}
             className="absolute inset-0"
           >
-            {currentBanner.link ? (
+            {currentBanner.link && currentBanner.link !== "#" && !currentBanner.cta?.toLowerCase().includes("coming soon") ? (
               <Link to={currentBanner.link} className="block w-full h-full">
                 {SlideContent}
               </Link>

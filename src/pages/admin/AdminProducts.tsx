@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { AdminLayout } from "@/components/layout/AdminLayout";
 import { motion } from "framer-motion";
-import { Plus, Pencil, Trash2, MoreVertical, Search, Filter, Loader2, X } from "lucide-react";
+import { Plus, Pencil, Trash2, MoreVertical, Search, Filter, Loader2, X, Download, Upload, FileSpreadsheet } from "lucide-react";
+import * as XLSX from "xlsx";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -46,6 +47,7 @@ interface ProductFormData {
   affiliate_url: string;
   is_active: boolean;
   is_featured: boolean;
+  price_label: string;
 }
 
 const initialFormData: ProductFormData = {
@@ -62,6 +64,7 @@ const initialFormData: ProductFormData = {
   affiliate_url: "",
   is_active: true,
   is_featured: false,
+  price_label: "",
 };
 
 export default function AdminProducts() {
@@ -118,6 +121,7 @@ export default function AdminProducts() {
         affiliate_url: data.affiliate_url || null,
         is_active: data.is_active,
         is_featured: data.is_featured,
+        price_label: data.price_label || null,
       };
 
       const { error } = await supabase.from("products").insert(productData);
@@ -148,6 +152,7 @@ export default function AdminProducts() {
         affiliate_url: data.affiliate_url || null,
         is_active: data.is_active,
         is_featured: data.is_featured,
+        price_label: data.price_label || null,
       };
 
       const { error } = await supabase.from("products").update(productData).eq("id", id);
@@ -201,6 +206,7 @@ export default function AdminProducts() {
       affiliate_url: product.affiliate_url || "",
       is_active: product.is_active,
       is_featured: product.is_featured,
+      price_label: product.price_label || "",
     });
     setIsDialogOpen(true);
   };
@@ -225,6 +231,67 @@ export default function AdminProducts() {
     }
   };
 
+  const handleExportTemplate = () => {
+    const headers = [
+      "Title", "Description", "Price", "Original Price", "Discount Percent",
+      "Rating", "Category ID", "Affiliate URL", "Image URL 1",
+      "Image URL 2", "Image URL 3", "Price Label"
+    ];
+    const data = [
+      ["Example Product", "Best product ever", "999", "1499", "33", "4.5", "", "https://amazon.in/...", "https://...", "", "", "Starting at"]
+    ];
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...data]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Products");
+    XLSX.writeFile(wb, "products_template.xlsx");
+    toast({ title: "Template downloaded!" });
+  };
+
+  const handleImportExcel = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      try {
+        const bstr = event.target?.result;
+        const wb = XLSX.read(bstr, { type: 'binary' });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const data = XLSX.utils.sheet_to_json(ws) as any[];
+
+        if (data.length === 0) {
+          toast({ title: "Excel file is empty", variant: "destructive" });
+          return;
+        }
+
+        const productsToInsert = data.map((row: any) => ({
+          title: row.Title || "Untitled Product",
+          description: row.Description || null,
+          price: parseFloat(row.Price) || 0,
+          original_price: row["Original Price"] ? parseFloat(row["Original Price"]) : null,
+          discount_percent: row["Discount Percent"] ? parseInt(row["Discount Percent"]) : null,
+          rating: row.Rating ? parseFloat(row.Rating) : 0,
+          category_id: row["Category ID"] || null,
+          affiliate_url: row["Affiliate URL"] || null,
+          image_url: [row["Image URL 1"], row["Image URL 2"], row["Image URL 3"]].filter(Boolean).join(","),
+          price_label: row["Price Label"] || null,
+          is_active: true,
+        }));
+
+        const { error } = await supabase.from("products").insert(productsToInsert);
+        if (error) throw error;
+
+        toast({ title: `Successfully imported ${data.length} products!` });
+        queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+      } catch (error: any) {
+        toast({ title: "Import failed", description: error.message, variant: "destructive" });
+      }
+    };
+    reader.readAsBinaryString(file);
+    e.target.value = ''; // Reset input
+  };
+
   const filteredProducts = products?.filter((p) =>
     p.title.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
@@ -245,10 +312,28 @@ export default function AdminProducts() {
               />
             </div>
           </div>
-          <Button className="shadow-glow" onClick={openAddDialog}>
-            <Plus className="w-4 h-4 mr-2" />
-            Add Product
-          </Button>
+          <div className="flex gap-3">
+            <Button variant="outline" onClick={handleExportTemplate}>
+              <Download className="w-4 h-4 mr-2" />
+              Template
+            </Button>
+            <div className="relative">
+              <Button variant="outline" className="relative overflow-hidden">
+                <Upload className="w-4 h-4 mr-2" />
+                Import
+                <input
+                  type="file"
+                  accept=".xlsx, .xls, .csv"
+                  onChange={handleImportExcel}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                />
+              </Button>
+            </div>
+            <Button className="shadow-glow" onClick={openAddDialog}>
+              <Plus className="w-4 h-4 mr-2" />
+              Add Product
+            </Button>
+          </div>
         </div>
 
         {/* Products Table */}
@@ -313,11 +398,11 @@ export default function AdminProducts() {
                       <td className="p-4">
                         <div>
                           <span className="font-medium text-foreground">
-                            ${Number(product.price).toFixed(2)}
+                            ₹{Number(product.price).toLocaleString()}
                           </span>
                           {product.original_price && (
                             <span className="text-xs text-muted-foreground line-through ml-2">
-                              ${Number(product.original_price).toFixed(2)}
+                              ₹{Number(product.original_price).toLocaleString()}
                             </span>
                           )}
                         </div>
@@ -482,6 +567,16 @@ export default function AdminProducts() {
                   placeholder="e.g. up to 10%"
                 />
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="price_label">Price Label (e.g. "Starting at", "From")</Label>
+              <Input
+                id="price_label"
+                value={formData.price_label}
+                onChange={(e) => setFormData({ ...formData, price_label: e.target.value })}
+                placeholder="Leave empty for no label"
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

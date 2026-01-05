@@ -2,12 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { MobileLayout } from "@/components/layout/MobileLayout";
 import { CategoryCard } from "@/components/ui/CategoryCard";
 import { motion } from "framer-motion";
-import { 
-  Smartphone, 
-  Shirt, 
-  Sparkles, 
-  Home as HomeIcon, 
-  Dumbbell, 
+import {
+  Smartphone,
+  Shirt,
+  Sparkles,
+  Home as HomeIcon,
+  Dumbbell,
   BookOpen,
   Gamepad2,
   Car,
@@ -84,7 +84,7 @@ export default function CategoriesPage() {
               const iconKey = category.icon || category.name.toLowerCase();
               const Icon = categoryIcons[iconKey] || Package;
               const productCount = category.products?.[0]?.count || 0;
-              
+
               return (
                 <motion.div
                   key={category.id}
@@ -95,7 +95,7 @@ export default function CategoriesPage() {
                   <CategoryCard
                     icon={Icon}
                     name={category.name}
-                    itemCount={productCount}
+                    itemCount={productCount > 0 ? productCount : "Coming Soon"}
                     onClick={() => navigate(`/category/${category.id}`)}
                   />
                 </motion.div>

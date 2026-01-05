@@ -4,7 +4,7 @@ import { LucideIcon } from "lucide-react";
 interface CategoryCardProps {
   icon: LucideIcon;
   name: string;
-  itemCount?: number;
+  itemCount?: number | string;
   onClick?: () => void;
 }
 
@@ -21,7 +21,9 @@ export function CategoryCard({ icon: Icon, name, itemCount, onClick }: CategoryC
       </div>
       <span className="text-xs font-medium text-foreground text-center line-clamp-1">{name}</span>
       {itemCount !== undefined && (
-        <span className="text-xs text-muted-foreground">{itemCount} items</span>
+        <span className={`text-[10px] ${typeof itemCount === 'string' ? 'text-primary' : 'text-muted-foreground'}`}>
+          {typeof itemCount === 'number' ? `${itemCount} items` : itemCount}
+        </span>
       )}
     </motion.button>
   );

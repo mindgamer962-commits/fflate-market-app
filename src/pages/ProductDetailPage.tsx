@@ -250,6 +250,7 @@ export default function ProductDetailPage() {
               <div className="space-y-1 border-b pb-6">
                 <div className="flex items-center gap-3">
                   <span className="text-2xl font-bold text-[#282c3f]">
+                    {product.price_label && <span className="text-base text-[#94969f] font-normal mr-2">{product.price_label}</span>}
                     ₹{Number(product.price).toLocaleString()}
                   </span>
                   {product.original_price && (

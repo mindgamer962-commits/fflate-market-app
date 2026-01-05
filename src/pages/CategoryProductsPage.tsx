@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { MobileLayout } from "@/components/layout/MobileLayout";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { motion } from "framer-motion";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, Sparkles } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -89,15 +89,32 @@ export default function CategoryProductsPage() {
                   price={Number(product.price)}
                   originalPrice={product.original_price ? Number(product.original_price) : undefined}
                   rating={product.rating ? Number(product.rating) : undefined}
+                  priceLabel={product.price_label}
                   discount={product.discount_percent || undefined}
                 />
               </motion.div>
             ))}
           </motion.div>
         ) : (
-          <div className="text-center py-12 text-muted-foreground">
-            No products found in this category
-          </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col items-center justify-center py-20 text-center"
+          >
+            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+              <Sparkles className="w-10 h-10 text-primary" />
+            </div>
+            <h2 className="text-xl font-bold text-foreground mb-2">Coming Soon!</h2>
+            <p className="text-muted-foreground max-w-[250px] mb-8">
+              We're currently handpicking the best deals for this category. Stay tuned!
+            </p>
+            <button
+              onClick={() => navigate("/categories")}
+              className="px-8 py-3 bg-primary text-primary-foreground font-semibold rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-transform active:scale-95"
+            >
+              Explore Other Categories
+            </button>
+          </motion.div>
         )}
       </div>
     </MobileLayout>

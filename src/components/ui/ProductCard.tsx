@@ -11,6 +11,7 @@ interface ProductCardProps {
   rating: number;
   discount?: number;
   isWishlisted?: boolean;
+  priceLabel?: string;
   onWishlistToggle?: (id: string) => void;
   onClick?: () => void;
 }
@@ -23,6 +24,7 @@ export function ProductCard({
   originalPrice,
   rating,
   discount,
+  priceLabel,
   isWishlisted = false,
   onWishlistToggle,
   onClick,
@@ -86,10 +88,13 @@ export function ProductCard({
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="font-bold text-foreground">${price.toFixed(2)}</span>
+          <span className="font-bold text-foreground">
+            {priceLabel && <span className="text-[10px] text-muted-foreground mr-1 uppercase">{priceLabel}</span>}
+            ₹{price.toLocaleString()}
+          </span>
           {originalPrice && (
             <span className="text-xs text-muted-foreground line-through">
-              ${originalPrice.toFixed(2)}
+              ₹{originalPrice.toLocaleString()}
             </span>
           )}
         </div>

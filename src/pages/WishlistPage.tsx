@@ -19,7 +19,7 @@ export default function WishlistPage() {
     queryKey: ["wishlisted-products", wishlist],
     queryFn: async () => {
       if (wishlist.length === 0) return [];
-      
+
       const { data, error } = await supabase
         .from("products")
         .select("*")
@@ -138,6 +138,7 @@ export default function WishlistPage() {
                 originalPrice={product.original_price ? Number(product.original_price) : undefined}
                 discount={product.discount_percent || undefined}
                 rating={product.rating ? Number(product.rating) : undefined}
+                priceLabel={product.price_label}
                 image={product.image_url || "/placeholder.svg"}
                 isWishlisted={isWishlisted(product.id)}
                 onWishlistToggle={() => toggleWishlist(product.id)}

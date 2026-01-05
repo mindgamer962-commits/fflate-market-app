@@ -53,7 +53,7 @@ export default function AdminDashboard() {
         const date = new Date(today);
         date.setDate(date.getDate() - i);
         const dayName = days[date.getDay()];
-        
+
         const startOfDay = new Date(date.setHours(0, 0, 0, 0)).toISOString();
         const endOfDay = new Date(date.setHours(23, 59, 59, 999)).toISOString();
 
@@ -222,7 +222,7 @@ export default function AdminDashboard() {
                         {product.title}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        ${Number(product.price).toFixed(2)}
+                        ₹{Number(product.price).toLocaleString()}
                       </p>
                     </div>
                   </div>

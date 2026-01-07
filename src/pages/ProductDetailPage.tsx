@@ -249,20 +249,30 @@ export default function ProductDetailPage() {
               {/* Price Section */}
               <div className="space-y-1 border-b pb-6">
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl font-bold text-[#282c3f]">
-                    {product.price_label && <span className="text-base text-[#94969f] font-normal mr-2">{product.price_label}</span>}
-                    ₹{Number(product.price).toLocaleString()}
-                  </span>
-                  {product.original_price && (
-                    <>
-                      <span className="text-lg text-[#94969f] line-through">
-                        MRP ₹{Number(product.original_price).toLocaleString()}
+                  <div className="flex flex-col">
+                    {product.price_label && (
+                      <span className="text-sm font-bold text-primary uppercase tracking-wider mb-1">
+                        {product.price_label}
                       </span>
-                      <span className="text-lg font-bold text-[#ff905a]">
-                        ({product.discount_percent || Math.round((1 - product.price / product.original_price) * 100)}% OFF)
-                      </span>
-                    </>
-                  )}
+                    )}
+                    <div className="flex items-center gap-3">
+                      {product.price !== null && product.price > 0 && (
+                        <span className="text-2xl font-bold text-[#282c3f]">
+                          ₹{Number(product.price).toLocaleString()}
+                        </span>
+                      )}
+                      {product.original_price && (
+                        <>
+                          <span className="text-lg text-[#94969f] line-through">
+                            MRP ₹{Number(product.original_price).toLocaleString()}
+                          </span>
+                          <span className="text-lg font-bold text-[#ff905a]">
+                            ({product.discount_percent || Math.round((1 - product.price / product.original_price) * 100)}% OFF)
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </div>
                 </div>
                 <p className="text-sm font-bold text-[#03a685]">inclusive of all taxes</p>
               </div>

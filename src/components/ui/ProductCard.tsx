@@ -90,7 +90,7 @@ export function ProductCard({
         <div className="flex items-center gap-2">
           <span className="font-bold text-foreground">
             {priceLabel && <span className="text-[10px] text-muted-foreground mr-1 uppercase">{priceLabel}</span>}
-            ₹{price.toLocaleString()}
+            {price !== null && price !== undefined && price > 0 && `₹${price.toLocaleString()}`}
           </span>
           {originalPrice && (
             <span className="text-xs text-muted-foreground line-through">

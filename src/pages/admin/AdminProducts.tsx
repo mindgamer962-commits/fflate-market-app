@@ -113,7 +113,7 @@ export default function AdminProducts() {
         title: data.title,
         description: data.description || null,
         image_url: [data.image_url, data.image_url_2, data.image_url_3].filter(Boolean).join(","),
-        price: parseFloat(data.price),
+        price: data.price ? parseFloat(data.price) : null,
         original_price: data.original_price ? parseFloat(data.original_price) : null,
         discount_percent: data.discount_percent ? parseInt(data.discount_percent) : null,
         rating: data.rating ? parseFloat(data.rating) : null,
@@ -144,7 +144,7 @@ export default function AdminProducts() {
         title: data.title,
         description: data.description || null,
         image_url: [data.image_url, data.image_url_2, data.image_url_3].filter(Boolean).join(","),
-        price: parseFloat(data.price),
+        price: data.price ? parseFloat(data.price) : null,
         original_price: data.original_price ? parseFloat(data.original_price) : null,
         discount_percent: data.discount_percent ? parseInt(data.discount_percent) : null,
         rating: data.rating ? parseFloat(data.rating) : null,
@@ -219,8 +219,13 @@ export default function AdminProducts() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title || !formData.price) {
-      toast({ title: "Title and price are required", variant: "destructive" });
+    if (!formData.title) {
+      toast({ title: "Title is required", variant: "destructive" });
+      return;
+    }
+
+    if (!formData.price && !formData.price_label) {
+      toast({ title: "Price or Price Label is required", variant: "destructive" });
       return;
     }
 
@@ -268,7 +273,7 @@ export default function AdminProducts() {
         const productsToInsert = data.map((row: any) => ({
           title: row.Title || "Untitled Product",
           description: row.Description || null,
-          price: parseFloat(row.Price) || 0,
+          price: row.Price ? parseFloat(row.Price) : null,
           original_price: row["Original Price"] ? parseFloat(row["Original Price"]) : null,
           discount_percent: row["Discount Percent"] ? parseInt(row["Discount Percent"]) : null,
           rating: row.Rating ? parseFloat(row.Rating) : 0,
@@ -397,9 +402,16 @@ export default function AdminProducts() {
                       </td>
                       <td className="p-4">
                         <div>
-                          <span className="font-medium text-foreground">
-                            ₹{Number(product.price).toLocaleString()}
-                          </span>
+                          {product.price_label && (
+                            <span className="text-[10px] text-muted-foreground mr-1 uppercase block">
+                              {product.price_label}
+                            </span>
+                          )}
+                          {product.price !== null && (
+                            <span className="font-medium text-foreground">
+                              ₹{Number(product.price).toLocaleString()}
+                            </span>
+                          )}
                           {product.original_price && (
                             <span className="text-xs text-muted-foreground line-through ml-2">
                               ₹{Number(product.original_price).toLocaleString()}
@@ -537,14 +549,14 @@ export default function AdminProducts() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="price">Price *</Label>
+                <Label htmlFor="price">Price {!formData.price_label && "*"}</Label>
                 <Input
                   id="price"
                   type="number"
                   step="0.01"
                   value={formData.price}
                   onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                  required
+                  required={!formData.price_label}
                 />
               </div>
               <div className="space-y-2">
@@ -570,13 +582,16 @@ export default function AdminProducts() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="price_label">Price Label (e.g. "Starting at", "From")</Label>
+              <Label htmlFor="price_label">Price Label</Label>
               <Input
                 id="price_label"
                 value={formData.price_label}
                 onChange={(e) => setFormData({ ...formData, price_label: e.target.value })}
-                placeholder="Leave empty for no label"
+                placeholder='e.g. "Starting from 50", "From", "Upto"'
               />
+              <p className="text-xs text-muted-foreground">
+                Optional. If set, price and discount become optional.
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

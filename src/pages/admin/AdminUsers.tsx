@@ -16,15 +16,17 @@ export default function AdminUsers() {
         .from("profiles")
         .select(`
           *,
-          wishlists(id)
+          wishlists(id),
+          product_clicks(id)
         `)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      
+
       return profiles?.map(profile => ({
         ...profile,
-        wishlistCount: profile.wishlists?.length || 0
+        wishlistCount: profile.wishlists?.length || 0,
+        clickCount: profile.product_clicks?.length || 0
       })) || [];
     },
   });
@@ -76,9 +78,9 @@ export default function AdminUsers() {
               >
                 <div className="flex items-center gap-4 mb-4">
                   {user.avatar_url ? (
-                    <img 
-                      src={user.avatar_url} 
-                      alt={user.full_name || "User"} 
+                    <img
+                      src={user.avatar_url}
+                      alt={user.full_name || "User"}
                       className="w-12 h-12 rounded-full object-cover"
                     />
                   ) : (
@@ -113,6 +115,12 @@ export default function AdminUsers() {
                     <Heart className="w-4 h-4 text-muted-foreground" />
                     <span className="text-muted-foreground">
                       {user.wishlistCount} items in wishlist
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Search className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-muted-foreground">
+                      {user.clickCount} product clicks
                     </span>
                   </div>
                 </div>

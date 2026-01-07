@@ -256,8 +256,8 @@ export default function ProductDetailPage() {
                       </span>
                     )}
                     <div className="flex items-center gap-3">
-                      {product.price !== null && product.price > 0 && (
-                        <span className="text-2xl font-bold text-[#282c3f]">
+                      {product.price !== null && Number(product.price) > 0 && (
+                        <span className="text-3xl font-bold text-gray-900">
                           ₹{Number(product.price).toLocaleString()}
                         </span>
                       )}

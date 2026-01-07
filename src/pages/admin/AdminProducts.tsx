@@ -407,7 +407,7 @@ export default function AdminProducts() {
                               {product.price_label}
                             </span>
                           )}
-                          {product.price !== null && (
+                          {product.price !== null && Number(product.price) > 0 && (
                             <span className="font-medium text-foreground">
                               ₹{Number(product.price).toLocaleString()}
                             </span>

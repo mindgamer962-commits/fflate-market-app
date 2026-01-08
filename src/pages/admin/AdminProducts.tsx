@@ -48,6 +48,7 @@ interface ProductFormData {
   is_active: boolean;
   is_featured: boolean;
   price_label: string;
+  search_keywords: string;
 }
 
 const initialFormData: ProductFormData = {
@@ -65,6 +66,7 @@ const initialFormData: ProductFormData = {
   is_active: true,
   is_featured: false,
   price_label: "",
+  search_keywords: "",
 };
 
 export default function AdminProducts() {
@@ -122,6 +124,7 @@ export default function AdminProducts() {
         is_active: data.is_active,
         is_featured: data.is_featured,
         price_label: data.price_label || null,
+        search_keywords: data.search_keywords || null,
       };
 
       const { error } = await supabase.from("products").insert(productData);
@@ -153,6 +156,7 @@ export default function AdminProducts() {
         is_active: data.is_active,
         is_featured: data.is_featured,
         price_label: data.price_label || null,
+        search_keywords: data.search_keywords || null,
       };
 
       const { error } = await supabase.from("products").update(productData).eq("id", id);
@@ -207,6 +211,7 @@ export default function AdminProducts() {
       is_active: product.is_active,
       is_featured: product.is_featured,
       price_label: product.price_label || "",
+      search_keywords: product.search_keywords || "",
     });
     setIsDialogOpen(true);
   };
@@ -240,7 +245,7 @@ export default function AdminProducts() {
     const headers = [
       "Title", "Description", "Price", "Original Price", "Discount Percent",
       "Rating", "Category ID", "Affiliate URL", "Image URL 1",
-      "Image URL 2", "Image URL 3", "Price Label"
+      "Image URL 2", "Image URL 3", "Price Label", "Search Keywords"
     ];
     const data = [
       ["Example Product", "Best product ever", "999", "1499", "33", "4.5", "", "https://amazon.in/...", "https://...", "", "", "Starting at"]
@@ -281,6 +286,7 @@ export default function AdminProducts() {
           affiliate_url: row["Affiliate URL"] || null,
           image_url: [row["Image URL 1"], row["Image URL 2"], row["Image URL 3"]].filter(Boolean).join(","),
           price_label: row["Price Label"] || null,
+          search_keywords: row["Search Keywords"] || null,
           is_active: true,
         }));
 
@@ -599,6 +605,19 @@ export default function AdminProducts() {
               />
               <p className="text-xs text-muted-foreground">
                 Optional. If set, price and discount become optional.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="search_keywords">Search Keywords / Synonyms</Label>
+              <Input
+                id="search_keywords"
+                value={formData.search_keywords}
+                onChange={(e) => setFormData({ ...formData, search_keywords: e.target.value })}
+                placeholder='e.g. "footwear, sneakers, running, athletic"'
+              />
+              <p className="text-xs text-muted-foreground">
+                Add comma-separated keywords to help users find this product.
               </p>
             </div>
 

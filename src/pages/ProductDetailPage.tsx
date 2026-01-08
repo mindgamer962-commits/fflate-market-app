@@ -253,7 +253,7 @@ export default function ProductDetailPage() {
                     {product.price && Number(product.price) > 0 ? (
                       <>
                         {product.price_label && (
-                          <span className="text-sm font-bold text-[#94969f] uppercase tracking-wider mb-1">
+                          <span className="text-sm font-bold text-[#535766] uppercase tracking-wider mb-1">
                             {product.price_label}
                           </span>
                         )}

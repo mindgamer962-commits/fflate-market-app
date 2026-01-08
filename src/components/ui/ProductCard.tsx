@@ -89,16 +89,22 @@ export function ProductCard({
 
         <div className="flex items-center gap-2">
           {price > 0 ? (
-            <span className="font-bold text-foreground">
-              {priceLabel && <span className="text-[10px] text-muted-foreground mr-1 uppercase">{priceLabel}</span>}
-              ₹{price.toLocaleString()}
-            </span>
+            <div className="flex flex-col items-start leading-tight">
+              {priceLabel && (
+                <span className="text-[10px] text-[#535766] font-bold uppercase">
+                  {priceLabel}
+                </span>
+              )}
+              <span className="font-bold text-[#282c3f]">
+                ₹{price.toLocaleString()}
+              </span>
+            </div>
           ) : priceLabel ? (
-            <span className="font-bold text-foreground">
+            <span className="font-bold text-[#282c3f]">
               {priceLabel}
             </span>
           ) : (
-            <span className="font-bold text-foreground">₹0</span>
+            <span className="font-bold text-[#282c3f]">₹0</span>
           )}
           {originalPrice && (
             <span className="text-xs text-muted-foreground line-through">

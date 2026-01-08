@@ -383,7 +383,7 @@ export default function AdminProducts() {
                             <img
                               src={product.image_url}
                               alt={product.title}
-                              className="w-12 h-12 rounded-xl object-cover"
+                              className="w-12 h-12 rounded-xl object-contain bg-secondary/50 p-1"
                             />
                           ) : (
                             <div className="w-12 h-12 rounded-xl bg-secondary" />

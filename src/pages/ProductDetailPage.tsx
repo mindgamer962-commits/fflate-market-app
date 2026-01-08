@@ -195,7 +195,7 @@ export default function ProductDetailPage() {
                     key={idx}
                     src={url}
                     alt={`${product.title} - ${idx + 1}`}
-                    className="w-full h-full object-cover flex-shrink-0 snap-center"
+                    className="w-full h-full object-contain flex-shrink-0 snap-center bg-[#f8f8f9] p-2"
                     onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg" }}
                   />
                 ))}

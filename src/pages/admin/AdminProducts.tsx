@@ -401,19 +401,27 @@ export default function AdminProducts() {
                         </Badge>
                       </td>
                       <td className="p-4">
-                        <div>
-                          {product.price_label && (
-                            <span className="text-[10px] text-muted-foreground mr-1 uppercase block">
+                        <div className="flex flex-col">
+                          {product.price && Number(product.price) > 0 ? (
+                            <>
+                              {product.price_label && (
+                                <span className="text-[10px] text-muted-foreground mr-1 uppercase block leading-tight">
+                                  {product.price_label}
+                                </span>
+                              )}
+                              <span className="font-medium text-foreground">
+                                ₹{Number(product.price).toLocaleString()}
+                              </span>
+                            </>
+                          ) : product.price_label ? (
+                            <span className="font-medium text-foreground">
                               {product.price_label}
                             </span>
-                          )}
-                          {product.price !== null && Number(product.price) > 0 && (
-                            <span className="font-medium text-foreground">
-                              ₹{Number(product.price).toLocaleString()}
-                            </span>
+                          ) : (
+                            <span className="font-medium text-foreground">₹0</span>
                           )}
                           {product.original_price && (
-                            <span className="text-xs text-muted-foreground line-through ml-2">
+                            <span className="text-xs text-muted-foreground line-through">
                               ₹{Number(product.original_price).toLocaleString()}
                             </span>
                           )}

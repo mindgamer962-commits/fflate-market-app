@@ -39,12 +39,15 @@ export function ProductCard({
       transition={{ duration: 0.3 }}
       className={cn(
         "group relative bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer",
-        isHighlighted && "ring-2 ring-primary shadow-glow bg-gradient-to-b from-primary/5 to-card"
+        isHighlighted && "ring-4 ring-white shadow-[0_0_30px_rgba(59,130,246,0.6)] z-10 scale-[1.02]"
       )}
       onClick={onClick}
     >
       {/* Image Container */}
-      <div className="relative aspect-square overflow-hidden bg-secondary">
+      <div className={cn(
+        "relative aspect-square overflow-hidden",
+        isHighlighted ? "bg-gradient-to-br from-blue-500 to-blue-200" : "bg-secondary"
+      )}>
         <img
           src={image}
           alt={title}
@@ -78,9 +81,8 @@ export function ProductCard({
           </button>
 
           {isHighlighted && (
-            <div className="bg-primary/90 backdrop-blur-sm text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1 shadow-sm border border-primary-foreground/20">
-              <Star className="w-2.5 h-2.5 fill-current" />
-              Premium
+            <div className="absolute top-0 left-0 bg-[#FF6B35] text-white text-[10px] font-black px-3 py-1.5 rounded-br-xl uppercase tracking-tighter italic shadow-md z-20">
+              FEATURED
             </div>
           )}
         </div>
@@ -122,6 +124,12 @@ export function ProductCard({
             </span>
           )}
         </div>
+
+        {isHighlighted && (
+          <button className="w-full mt-3 bg-primary text-primary-foreground py-2 rounded-xl font-bold text-sm shadow-md hover:bg-primary/90 transition-colors">
+            Shop Now
+          </button>
+        )}
       </div>
     </motion.div>
   );

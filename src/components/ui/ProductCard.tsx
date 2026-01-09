@@ -12,6 +12,7 @@ interface ProductCardProps {
   discount?: number;
   isWishlisted?: boolean;
   priceLabel?: string;
+  isHighlighted?: boolean;
   onWishlistToggle?: (id: string) => void;
   onClick?: () => void;
 }
@@ -25,6 +26,7 @@ export function ProductCard({
   rating,
   discount,
   priceLabel,
+  isHighlighted = false,
   isWishlisted = false,
   onWishlistToggle,
   onClick,
@@ -35,7 +37,10 @@ export function ProductCard({
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -4 }}
       transition={{ duration: 0.3 }}
-      className="group relative bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
+      className={cn(
+        "group relative bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer",
+        isHighlighted && "ring-2 ring-primary shadow-glow bg-gradient-to-b from-primary/5 to-card"
+      )}
       onClick={onClick}
     >
       {/* Image Container */}
@@ -72,7 +77,12 @@ export function ProductCard({
             />
           </button>
 
-
+          {isHighlighted && (
+            <div className="bg-primary/90 backdrop-blur-sm text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1 shadow-sm border border-primary-foreground/20">
+              <Star className="w-2.5 h-2.5 fill-current" />
+              Premium
+            </div>
+          )}
         </div>
       </div>
 

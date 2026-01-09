@@ -95,6 +95,21 @@ export default function HomePage() {
     },
   });
 
+  // Fetch big discount products
+  const { data: bigDiscountProducts = [], isLoading: bigDiscountLoading } = useQuery({
+    queryKey: ["big-discount-products"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("is_active", true)
+        .eq("is_big_discount", true)
+        .limit(6);
+      if (error) throw error;
+      return data;
+    },
+  });
+
   // Fetch trending products (most clicked)
   const { data: trendingProducts = [], isLoading: trendingLoading } = useQuery({
     queryKey: ["trending-products"],
@@ -171,6 +186,52 @@ export default function HomePage() {
           </motion.div>
         )}
 
+        {/* Big Discount Section */}
+        {bigDiscountProducts.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-500 to-red-600 p-6 shadow-xl"
+          >
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-2xl font-black text-white italic tracking-tighter uppercase">Big Discounts</h2>
+                  <p className="text-orange-100 text-xs font-medium">Limited time offers you can't miss!</p>
+                </div>
+                <div className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full border border-white/30">
+                  <span className="text-xs font-bold text-white">UP TO 80% OFF</span>
+                </div>
+              </div>
+
+              <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide snap-x">
+                {bigDiscountProducts.map((product) => (
+                  <div key={product.id} className="min-w-[160px] snap-start">
+                    <ProductCard
+                      id={product.id}
+                      title={product.title}
+                      price={Number(product.price)}
+                      originalPrice={product.original_price ? Number(product.original_price) : undefined}
+                      discount={product.discount_percent || undefined}
+                      rating={product.rating ? Number(product.rating) : 0}
+                      priceLabel={product.price_label}
+                      image={product.image_url || "/placeholder.svg"}
+                      isWishlisted={isWishlisted(product.id)}
+                      isHighlighted={product.is_highlighted}
+                      onWishlistToggle={() => handleWishlistToggle(product.id)}
+                      onClick={() => navigate(`/product/${product.id}`)}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Decorative elements */}
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-3xl" />
+            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-black/10 rounded-full blur-3xl" />
+          </motion.section>
+        )}
+
         {/* Categories */}
         {categories.length > 0 && (
           <motion.section
@@ -236,6 +297,7 @@ export default function HomePage() {
                   priceLabel={product.price_label}
                   image={product.image_url || "/placeholder.svg"}
                   isWishlisted={isWishlisted(product.id)}
+                  isHighlighted={product.is_highlighted}
                   onWishlistToggle={() => handleWishlistToggle(product.id)}
                   onClick={() => navigate(`/product/${product.id}`)}
                 />
@@ -276,6 +338,7 @@ export default function HomePage() {
                   priceLabel={product.price_label}
                   image={product.image_url || "/placeholder.svg"}
                   isWishlisted={isWishlisted(product.id)}
+                  isHighlighted={product.is_highlighted}
                   onWishlistToggle={() => handleWishlistToggle(product.id)}
                   onClick={() => navigate(`/product/${product.id}`)}
                 />

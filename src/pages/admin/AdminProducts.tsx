@@ -47,6 +47,8 @@ interface ProductFormData {
   affiliate_url: string;
   is_active: boolean;
   is_featured: boolean;
+  is_big_discount: boolean;
+  is_highlighted: boolean;
   price_label: string;
   search_keywords: string;
 }
@@ -65,6 +67,8 @@ const initialFormData: ProductFormData = {
   affiliate_url: "",
   is_active: true,
   is_featured: false,
+  is_big_discount: false,
+  is_highlighted: false,
   price_label: "",
   search_keywords: "",
 };
@@ -123,6 +127,8 @@ export default function AdminProducts() {
         affiliate_url: data.affiliate_url || null,
         is_active: data.is_active,
         is_featured: data.is_featured,
+        is_big_discount: data.is_big_discount,
+        is_highlighted: data.is_highlighted,
         price_label: data.price_label || null,
         search_keywords: data.search_keywords || null,
       };
@@ -155,6 +161,8 @@ export default function AdminProducts() {
         affiliate_url: data.affiliate_url || null,
         is_active: data.is_active,
         is_featured: data.is_featured,
+        is_big_discount: data.is_big_discount,
+        is_highlighted: data.is_highlighted,
         price_label: data.price_label || null,
         search_keywords: data.search_keywords || null,
       };
@@ -210,6 +218,8 @@ export default function AdminProducts() {
       affiliate_url: product.affiliate_url || "",
       is_active: product.is_active,
       is_featured: product.is_featured,
+      is_big_discount: product.is_big_discount || false,
+      is_highlighted: product.is_highlighted || false,
       price_label: product.price_label || "",
       search_keywords: product.search_keywords || "",
     });
@@ -245,10 +255,11 @@ export default function AdminProducts() {
     const headers = [
       "Title", "Description", "Price", "Original Price", "Discount Percent",
       "Rating", "Category ID", "Affiliate URL", "Image URL 1",
-      "Image URL 2", "Image URL 3", "Price Label", "Search Keywords"
+      "Image URL 2", "Image URL 3", "Price Label", "Search Keywords",
+      "Is Big Discount", "Is Highlighted"
     ];
     const data = [
-      ["Example Product", "Best product ever", "999", "1499", "33", "4.5", "", "https://amazon.in/...", "https://...", "", "", "Starting at"]
+      ["Example Product", "Best product ever", "999", "1499", "33", "4.5", "", "https://amazon.in/...", "https://...", "", "", "Starting at", "keyword1, keyword2", "TRUE", "FALSE"]
     ];
     const ws = XLSX.utils.aoa_to_sheet([headers, ...data]);
     const wb = XLSX.utils.book_new();
@@ -287,6 +298,8 @@ export default function AdminProducts() {
           image_url: [row["Image URL 1"], row["Image URL 2"], row["Image URL 3"]].filter(Boolean).join(","),
           price_label: row["Price Label"] || null,
           search_keywords: row["Search Keywords"] || null,
+          is_big_discount: row["Is Big Discount"] === "TRUE" || row["Is Big Discount"] === true,
+          is_highlighted: row["Is Highlighted"] === "TRUE" || row["Is Highlighted"] === true,
           is_active: true,
         }));
 
@@ -437,9 +450,17 @@ export default function AdminProducts() {
                         <span className="text-foreground">{product.click_count || 0}</span>
                       </td>
                       <td className="p-4">
-                        <Badge className={product.is_active ? "bg-success/10 text-success border-0" : "bg-muted text-muted-foreground border-0"}>
-                          {product.is_active ? "Active" : "Inactive"}
-                        </Badge>
+                        <div className="flex flex-col gap-1">
+                          <Badge className={product.is_active ? "bg-success/10 text-success border-0 w-fit" : "bg-muted text-muted-foreground border-0 w-fit"}>
+                            {product.is_active ? "Active" : "Inactive"}
+                          </Badge>
+                          {product.is_big_discount && (
+                            <Badge className="bg-orange-500/10 text-orange-600 border-0 w-fit">Big Discount</Badge>
+                          )}
+                          {product.is_highlighted && (
+                            <Badge className="bg-purple-500/10 text-purple-600 border-0 w-fit shadow-glow">Highlighted</Badge>
+                          )}
+                        </div>
                       </td>
                       <td className="p-4 text-right">
                         <DropdownMenu>
@@ -661,6 +682,22 @@ export default function AdminProducts() {
                   onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked })}
                 />
                 <Label htmlFor="is_featured">Featured</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="is_big_discount"
+                  checked={formData.is_big_discount}
+                  onCheckedChange={(checked) => setFormData({ ...formData, is_big_discount: checked })}
+                />
+                <Label htmlFor="is_big_discount">Big Discount</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="is_highlighted"
+                  checked={formData.is_highlighted}
+                  onCheckedChange={(checked) => setFormData({ ...formData, is_highlighted: checked })}
+                />
+                <Label htmlFor="is_highlighted">Highlighted</Label>
               </div>
             </div>
 

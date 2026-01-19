@@ -61,73 +61,83 @@ export default function AdminUsers() {
           />
         </div>
 
-        {/* Users Grid */}
+        {/* Users Table */}
         {filteredUsers.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground bg-card rounded-2xl border border-border">
             {searchQuery ? "No users match your search" : "No users yet."}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredUsers.map((user, index) => (
-              <motion.div
-                key={user.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-card rounded-2xl p-6 shadow-sm border border-border"
-              >
-                <div className="flex items-center gap-4 mb-4">
-                  {user.avatar_url ? (
-                    <img
-                      src={user.avatar_url}
-                      alt={user.full_name || "User"}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="text-lg font-semibold text-primary">
-                        {(user.full_name || user.email).charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                  )}
-                  <div>
-                    <h3 className="font-semibold text-foreground">
-                      {user.full_name || "Anonymous"}
-                    </h3>
-                    <p className="text-sm text-muted-foreground truncate max-w-[180px]">
-                      {user.email}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Mail className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground truncate">{user.email}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Calendar className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">
-                      Joined {new Date(user.created_at).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Heart className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">
-                      {user.wishlistCount} items in wishlist
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Search className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">
-                      {user.clickCount} product clicks
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+          <div className="bg-card rounded-2xl border border-border overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="border-b border-border bg-muted/30">
+                    <th className="px-6 py-4 text-sm font-semibold text-foreground">User</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-foreground">Email</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-foreground">Joined</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-foreground text-center">Wishlist</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-foreground text-center">Clicks ("See")</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {filteredUsers.map((user, index) => (
+                    <motion.tr
+                      key={user.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="hover:bg-muted/50 transition-colors"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          {user.avatar_url ? (
+                            <img
+                              src={user.avatar_url}
+                              alt={user.full_name || "User"}
+                              className="w-8 h-8 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                              <span className="text-xs font-semibold text-primary">
+                                {(user.full_name || user.email).charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                          )}
+                          <span className="font-medium text-foreground whitespace-nowrap">
+                            {user.full_name || "Anonymous"}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Mail className="w-3.5 h-3.5" />
+                          <span>{user.email}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Calendar className="w-3.5 h-3.5" />
+                          <span>{new Date(user.created_at).toLocaleDateString()}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <span className="inline-flex items-center justify-center min-w-[2rem] h-6 px-2 text-xs font-semibold bg-primary/10 text-primary rounded-full">
+                          {user.wishlistCount}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <span className="inline-flex items-center justify-center min-w-[2rem] h-6 px-2 text-xs font-semibold bg-orange-500/10 text-orange-600 rounded-full">
+                          {user.clickCount}
+                        </span>
+                      </td>
+                    </motion.tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        )}
+        )
+        }
       </div>
     </AdminLayout>
   );
